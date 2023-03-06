@@ -15,8 +15,6 @@ def game_over_screen(screen,list_copy):
         screen.blit(display_word,(175,200))
 
 
-
-
 def refine_list(lst):
     for i in range(len(lst)):
         lst[i]=remove_duplicate(lst[i])
@@ -120,4 +118,5 @@ while(running):
             
             word=""
             guessed_indexes=[]
-        pygame.display.update()
+
+    pygame.display.update()
