@@ -120,4 +120,3 @@ while(running):
             guessed_indexes=[]
 
     pygame.display.update()
-    
