@@ -79,7 +79,7 @@ with open('words.txt', 'r+') as f:
     listword = generate_word_list()
     for i in range(len(listword)-1):
         random_word=random.choice(listword)
-        print(random_word)
+        #print(random_word)
         wordschange.append(random_word+'\n')
         listword.remove(random_word)
     random_word=random.choice(listword)
