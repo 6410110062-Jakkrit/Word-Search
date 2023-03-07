@@ -2,8 +2,11 @@ import random
 def generate_word_list():
     file=open("words.txt","r")
     words_list=[]
+    wordrandlist = []
+    #i=0
     for line in file.readlines():
         words_list.append(line.rstrip())
+        wordrandlist.append(random.choice(words_list)+"\n")
     return words_list
 
 def check_possiblity(matrice,word,index,fitting_orders,fitting_order):
@@ -70,3 +73,16 @@ for i in range(15):
         if grid[i][j]=="0":
             grid[i][j]=random.choice(alphabet)
 
+#Swap word position in file word.txt
+with open('words.txt', 'r+') as f:
+    wordschange = []
+    listword = generate_word_list()
+    for i in range(len(listword)-1):
+        random_word=random.choice(listword)
+        print(random_word)
+        wordschange.append(random_word+'\n')
+        listword.remove(random_word)
+    random_word=random.choice(listword)
+    wordschange.append(random_word)
+    f.writelines(wordschange)
+    f.close()

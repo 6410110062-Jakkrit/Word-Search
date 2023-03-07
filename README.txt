@@ -1,6 +1,8 @@
 คำสั่ง run web
 
-pygbag main.py
+python main.py ; ธรรมดาบนเทอร์มินัล
+
+python generate.py | pygbag main.py ; รันบนเว็ป
 
 
 Test URL
