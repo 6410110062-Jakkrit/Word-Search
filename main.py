@@ -1,6 +1,8 @@
 import pygame
 import generate
 import sys
+import link_word
+import pickle
 
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
@@ -13,7 +15,7 @@ button_x = 300
 button_y = 450
 button_color = (0, 255, 0)
 button_hover_color = (0, 200, 0)
-button_text = "Restart"
+
 
 # Define button font properties
 font_size = 25
@@ -21,6 +23,7 @@ font = pygame.font.SysFont(None, font_size)
 text_color = (255, 255, 255)
 
 def run_game():
+    global list_choose
     selected = []
 
     def refine_list(lst):
@@ -85,18 +88,44 @@ def run_game():
             screen.blit(display_word,(x,y))
             y+=33
     def game_over_screen(screen,list_copy):
-        game_over_format=pygame.font.Font("freesansbold.ttf", 100)
+        game_over_format=pygame.font.Font("freesansbold.ttf", 45)
+        try:
+            if list_copy==[]:
+                screen.fill((255,255,255))
+                display_word=game_over_format.render(F"{link_word.STD_ID[list_choose[0]]} !!",True,"Green")
+                x = (screen.get_width() - display_word.get_width()) // 2
+                screen.blit(display_word,(x,320))
+                display_word=game_over_format.render(F"Your baby taking is",True,"Green")
+                x = (screen.get_width() - display_word.get_width()) // 2
+                screen.blit(display_word,(x,200))
+                button("FINISHED", button_x, button_y, button_width, button_height, button_color, button_hover_color, rerun_game)
+                pygame.display.update()
+        except Exception as e:
+                game_over_format=pygame.font.Font("freesansbold.ttf", 80)
+                display_word=game_over_format.render(F"THANK YOU",True,"Green")
+                x = (screen.get_width() - display_word.get_width()) // 2
+                screen.blit(display_word,(x,90))
+                display_word=game_over_format.render(F"^",True,"Green")
+                x = (screen.get_width() - display_word.get_width()) // 2
+                screen.blit(display_word,(x,190))
+                display_word=game_over_format.render(F"6410110062",True,"Green")
+                x = (screen.get_width() - display_word.get_width()) // 2
+                screen.blit(display_word,(x,280))
+                display_word=game_over_format.render(F"6410110236",True,"Green")
+                x = (screen.get_width() - display_word.get_width()) // 2
+                screen.blit(display_word,(x,350))
+                display_word=game_over_format.render(F"6410110663",True,"Green")
+                x = (screen.get_width() - display_word.get_width()) // 2
+                screen.blit(display_word,(x,420))
+                pygame.display.update()
 
-        if list_copy==[]:
-            screen.fill((255,255,255))
-            display_word=game_over_format.render("YOU WIN",True,"Green")
-            screen.blit(display_word,(175,200))
-            button(button_text, button_x, button_y, button_width, button_height, button_color, button_hover_color, rerun_game)
+            
 
 
 
     drag=False
-    guessed=[]
+    #guessed=[]
+    list_choose= []
     word=""
     running=True
     guessed_indexes=[]
@@ -126,20 +155,53 @@ def run_game():
                         
                         guessed_indexes.append([(x//40)*40,(y//40)*40])
             else:
+                # A variable that is used to determine if the mouse is being dragged.
                 drag=False
                 if remove_duplicate(word) in words_to_guess:
                     selected+=(guessed_indexes)
                     index=words_to_guess.index(remove_duplicate(word))
                     words_to_guess.remove(remove_duplicate(word))
                     generate.words_copy.pop(index)
-                
+                    list_choose.append(remove_duplicate(word))
+                    print("CHOOSE = ",list_choose)
+                    if len(list_choose) > 0 and len(list_choose) == 1:    
+                        with open(r'C:\Users\garoc\Downloads\Word-Search-main\Word-Search-main\words.pkl', 'rb') as f:
+                            database_value = pickle.load(f)
+
+                        #Store ID in store_std_id.txt
+                        with open('store_std_id.txt', 'a') as f:
+                            f.writelines(database_value[list_choose[0]]+"\n")
+                            f.close()
+                        # Delete the id out from dictionary
+                        id_to_delete = list_choose[0]
+                        if id_to_delete in database_value:
+                            del database_value[id_to_delete]
+
+                        # Write the updated dictionary to a file
+                        with open(r'C:\Users\garoc\Downloads\Word-Search-main\Word-Search-main\words.pkl', 'wb') as f:
+                            pickle.dump(database_value, f)
+                        with open(r'C:\Users\garoc\Downloads\Word-Search-main\Word-Search-main\words.pkl', 'rb') as f:
+                            database_value = pickle.load(f)
+
+                            print(database_value)
+                        
+                        with open("words.txt", "r+") as f:
+                            lines = f.readlines()
+                            f.seek(0)
+                            for line in lines:
+                                if list_choose[0] not in line:
+                                    f.write(line)
+                            f.truncate()
+
                 word=""
                 guessed_indexes=[]
+        
 
         if not running:
             kill_game()
 
         pygame.display.update()
+ 
 
 def kill_game():
     pygame.quit()
@@ -173,6 +235,7 @@ background = pygame.image.load("TBG_PROJECT.jpg")
 new_size = (800, 600)
 scaled_image = pygame.transform.scale(background, new_size)
 screen.blit(scaled_image, (0, 0))
+
 
 while True:
     for event in pygame.event.get():
