@@ -92,7 +92,7 @@ def run_game():
         try:
             if list_copy==[]:
                 screen.fill((255,255,255))
-                display_word=game_over_format.render(F"{link_word.STD_ID[list_choose[0]]} !!",True,"Green")
+                display_word=game_over_format.render(F"{database_value[list_choose[0]]} !!",True,"Green")
                 x = (screen.get_width() - display_word.get_width()) // 2
                 screen.blit(display_word,(x,320))
                 display_word=game_over_format.render(F"Your baby taking is",True,"Green")
